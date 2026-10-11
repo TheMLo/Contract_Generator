@@ -1,9 +1,7 @@
 services:
   web:
-    image: nginx:alpine
+    build: .
     container_name: mon-site-statique
     restart: unless-stopped
     ports:
       - "8089:80"
-    volumes:
-      - ./:/usr/share/nginx/html:ro
