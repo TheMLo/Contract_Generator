@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur de Contrats Commerciaux (JSON / XML)</title>
+  <!-- Lien vers la feuille de style externe -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- BARRE DE NAVIGATION SUPÉRIEURE -->
+  <header class="app-header no-print">
+    <div class="brand">
+      <span class="brand-badge">EDI / LEGAL</span>
+      <h1>Générateur Générique de Contrats</h1>
+    </div>
+    <div class="header-status">
+      Synchronisation Temps Réel : <strong>JSON ⇄ XML</strong>
+    </div>
+  </header>
+
+  <main class="grid">
+    <!-- COLONNE GAUCHE : SAISIE & MODÈLE GÉNÉRIQUE -->
+    <section class="no-print">
+      
+      <!-- Carte 1 : Formulaire de saisie -->
+      <div class="card">
+        <div class="card-header">
+          <h2><span class="step-badge">Étape 1</span> Paramètres de la Transaction</h2>
+        </div>
+
+        <div id="form-container">
+          <div class="form-section-title">Informations Générales</div>
+          <div class="form-row">
+            <div class="input-wrapper">
+              <label>Référence</label>
+              <input type="text" data-path="meta.reference" value="CTR-2026-089">
+            </div>
+            <div class="input-wrapper">
+              <label>Date de signature</label>
+              <input type="date" data-path="meta.date" value="2026-10-11">
+            </div>
+            <div class="input-wrapper">
+              <label>Lieu (Juridiction)</label>
+              <input type="text" data-path="meta.lieu" value="Alger">
+            </div>
+          </div>
+
+          <div class="form-section-title">Parties Contractantes</div>
+          <div class="form-row">
+            <div class="input-wrapper">
+              <label>Raison sociale du Vendeur</label>
+              <input type="text" data-path="vendeur.nom" value="TechCorp Algérie SARL">
+            </div>
+            <div class="input-wrapper">
+              <label>Identifiant (RC / NIF Vendeur)</label>
+              <input type="text" data-path="vendeur.identifiant" value="RC: 16/00-1234567B">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="input-wrapper">
+              <label>Raison sociale de l'Acheteur</label>
+              <input type="text" data-path="acheteur.nom" value="Alpha Distribution SPA">
+            </div>
+            <div class="input-wrapper">
+              <label>Identifiant (RC / NIF Acheteur)</label>
+              <input type="text" data-path="acheteur.identifiant" value="RC: 16/00-9876543A">
+            </div>
+          </div>
+
+          <div class="form-section-title">Détails Financiers & Objet</div>
+          <div class="form-row">
+            <div class="input-wrapper">
+              <label>Objet de la transaction commerciale</label>
+              <input type="text" data-path="transaction.objet" value="Fourniture de 10 serveurs rackables et déploiement réseau">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="input-wrapper">
+              <label>Montant HT</label>
+              <input type="number" data-path="transaction.montant_ht" value="2500000">
+            </div>
+            <div class="input-wrapper">
+              <label>Devise</label>
+              <input type="text" data-path="transaction.devise" value="DZD">
+            </div>
+            <div class="input-wrapper">
+              <label>Modalités de règlement</label>
+              <input type="text" data-path="transaction.modalites_paiement" value="Virement bancaire à 30 jours">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carte 2 : Moteur de Template Générique -->
+      <div class="card">
+        <div class="card-header">
+          <h2><span class="step-badge">Étape 2</span> Modèle Générique (Template)</h2>
+        </div>
+        <p class="helper-text">
+          Injectez dynamiquement toute variable via la syntaxe <code>{{groupe.champ}}</code>.
+        </p>
+        <textarea id="template-editor" rows="12">CONTRAT DE TRANSACTION COMMERCIALE
+Réf : {{meta.reference}} | Date : {{meta.date}} | Lieu : {{meta.lieu}}
+
+ENTRE LES SOUSSIGNÉS :
+La société {{vendeur.nom}}, immatriculée sous le numéro {{vendeur.identifiant}}, ci-après dénommée « LE VENDEUR », d'une part,
+
+ET :
+La société {{acheteur.nom}}, immatriculée sous le numéro {{acheteur.identifiant}}, ci-après dénommée « L'ACHETEUR », d'autre part.
+
+IL A ÉTÉ CONVENU CE QUI SUIT :
+
+ARTICLE 1 - OBJET DU CONTRAT
+Le Vendeur s'engage à fournir à l'Acheteur la prestation ou marchandise suivante :
+« {{transaction.objet}} ».
+
+ARTICLE 2 - PRIX ET MODALITÉS DE PAIEMENT
+La présente transaction est conclue pour un montant hors taxes de {{transaction.montant_ht}} {{transaction.devise}}.
+Le règlement s'effectuera selon la modalité suivante : {{transaction.modalites_paiement}}.
+
+ARTICLE 3 - LOI APPLICABLE ET JURIDICTION
+Le présent contrat est soumis au droit commercial en vigueur à {{meta.lieu}}.
+
+Fait à {{meta.lieu}}, le {{meta.date}}, en deux exemplaires originaux.
+
+Signature du Vendeur                               
+
+
+
+
+
+
+Signature de l'Acheteur </textarea>
+      </div>
+
+    </section>
+
+    <!-- COLONNE DROITE : RENDU A4 & INTEROPÉRABILITÉ -->
+    <section>
+      
+      <!-- Carte 3 : Rendu Visuel du Contrat -->
+      <div class="card">
+        <div class="card-header no-print">
+          <h2><span class="step-badge">Étape 3</span> Aperçu du Document Officiel</h2>
+          <button class="btn" onclick="window.print()">Imprimer / Exporter en PDF</button>
+        </div>
+        <div class="paper-container">
+          <div id="contract-output" class="contract-preview"></div>
+        </div>
+      </div>
+
+      <!-- Carte 4 : Flux JSON & XML -->
+      <div class="card no-print">
+        <div class="card-header">
+          <h2><span class="step-badge">Étape 4</span> Flux de Données Interopérables</h2>
+        </div>
+        <div class="code-grid">
+          <div class="code-panel">
+            <div class="code-header">
+              <span>Structure JSON</span>
+              <span class="format-tag">application/json</span>
+            </div>
+            <pre id="json-output" class="code-box"></pre>
+            <button class="btn btn-secondary" onclick="downloadFile('contrat.json', document.getElementById('json-output').textContent, 'application/json')">
+              Télécharger contrat.json
+            </button>
+          </div>
+
+          <div class="code-panel">
+            <div class="code-header">
+              <span>Équivalent XML</span>
+              <span class="format-tag">application/xml</span>
+            </div>
+            <pre id="xml-output" class="code-box"></pre>
+            <button class="btn btn-secondary" onclick="downloadFile('contrat.xml', document.getElementById('xml-output').textContent, 'application/xml')">
+              Télécharger contrat.xml
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // b) Moteur de Templating Générique
+    function renderTemplate(templateStr, dataObj) {
+      return templateStr.replace(/\{\{([\w\.]+)\}\}/g, (match, path) => {
+        const keys = path.split('.');
+        let val = dataObj;
+        for (const k of keys) {
+          val = val ? val[k] : '';
+        }
+        return val !== undefined ? `<strong>${val}</strong>` : match;
+      }).replace(/\n/g, '<br>');
+    }
+
+    // Construction dynamique de l'arbre JSON à partir des attributs data-path
+    function buildDataModel() {
+      const model = { contrat: {} };
+      document.querySelectorAll('[data-path]').forEach(input => {
+        const [group, key] = input.getAttribute('data-path').split('.');
+        if (!model.contrat[group]) model.contrat[group] = {};
+        model.contrat[group][key] = input.value;
+      });
+      return model;
+    }
+
+    // c) Convertisseur récursif JSON vers XML
+    function jsonToXml(obj, indent = '') {
+      let xml = '';
+      for (const prop in obj) {
+        if (!obj.hasOwnProperty(prop)) continue;
+        if (typeof obj[prop] === 'object' && obj[prop] !== null) {
+          xml += `${indent}<${prop}>\n${jsonToXml(obj[prop], indent + '  ')}${indent}</${prop}>\n`;
+        } else {
+          const escapedVal = String(obj[prop])
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+          xml += `${indent}<${prop}>${escapedVal}</${prop}>\n`;
+        }
+      }
+      return xml;
+    }
+
+    // Synchronisation complète
+    function updateAll() {
+      const fullModel = buildDataModel();
+      const template = document.getElementById('template-editor').value;
+
+      document.getElementById('contract-output').innerHTML = renderTemplate(template, fullModel.contrat);
+      document.getElementById('json-output').textContent = JSON.stringify(fullModel, null, 2);
+      document.getElementById('xml-output').textContent = `<?xml version="1.0" encoding="UTF-8"?>\n` + jsonToXml(fullModel).trim();
+    }
+
+    // Téléchargement des fichiers
+    function downloadFile(filename, content, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.querySelectorAll('input, textarea').forEach(el => {
+      el.addEventListener('input', updateAll);
+    });
+
+    updateAll();
+  </script>
+</body>
+</html>
